@@ -6,7 +6,9 @@
             "name": "vanea"
         }
     ],
-    "require": {},
+    "require": {
+        "adbario/php-dot-notation": "^2.0"
+    },
     "autoload" : {
         "psr-4": {
             "VaneaVasco\\Toggle\\": "src"

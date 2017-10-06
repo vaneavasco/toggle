@@ -2,50 +2,118 @@
 
 namespace Unit\Toggle\SimpleToggle;
 
+use Adbar\Dot;
 use PHPUnit\Framework\TestCase;
 use VaneaVasco\Toggle\Toggle\SimpleToggle;
 
 
+/**
+ * Class IsEnabledTest
+ * @package Unit\Toggle\SimpleToggle
+ */
 class IsEnabledTest extends TestCase
 {
     /**
      * @dataProvider isEnabledDataProvider
      */
-    public function testWhenIsEnabled($data)
+    public function testWhenIsEnabled(string $featureName, array $config)
     {
         $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
-                             ->setConstructorArgs($data)
+                             ->setMethods(null)
+                             ->getMock();
+
+        $this->assertTrue($simpleToggle->isEnabled($featureName, new Dot($config)));
+    }
+
+    /**
+     * @dataProvider aNonExistingKeyIsProvidedProvider
+     */
+    public function testWhenANonExistingKeyIsProvided(string $featureName, array $config)
+    {
+        $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
                              ->setMethods(null)
                              ->getMock();
 
 
-        $this->assertTrue($simpleToggle->isEnabled([]));
+        $this->assertNotTrue($simpleToggle->isEnabled($featureName, new Dot($config)));
     }
 
-    public function testWhenANonExistingKeyIsProvided()
+    /**
+     * @dataProvider isNotEnabledDataProvider
+     */
+    public function testWenIsNotEnabled(string $featureName, array $config)
     {
         $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
-                             ->setConstructorArgs(['config' => ['featureName' => true], 'someFeatureName'])
                              ->setMethods(null)
                              ->getMock();
 
-        $this->assertNotTrue($simpleToggle->isEnabled([]));
+        $this->assertNotTrue($simpleToggle->isEnabled($featureName, new Dot($config)));
     }
 
-    public function testWenIsNotEnabled()
-    {
-        $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
-                             ->setConstructorArgs(['config' => ['featureName' => false], 'featureName'])
-                             ->setMethods(null)
-                             ->getMock();
-
-        $this->assertNotTrue($simpleToggle->isEnabled([]));
-    }
-
+    /**
+     * @return array
+     */
     public function isEnabledDataProvider()
     {
+        $featureName = 'myFeature';
+
         return [
-            'simple feature' => [['config' => ['featureName' => true], 'featureName']]
+            'enabled simple toggle' => [
+                'featureName' => $featureName,
+                'config'      => [
+                    $featureName => [
+                        'toggle' => SimpleToggle::class,
+                        'config' => [
+                            'enabled' => true
+                        ]
+                    ],
+                ],
+            ]
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
+    public function isNotEnabledDataProvider()
+    {
+        $featureName = 'myFeature';
+
+        return [
+            'enabled simple toggle' => [
+                'featureName' => $featureName,
+                'config'      => [
+                    $featureName => [
+                        'toggle' => SimpleToggle::class,
+                        'config' => [
+                            'enabled' => false
+                        ]
+                    ],
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function aNonExistingKeyIsProvidedProvider()
+    {
+        $featureName = 'myFeature';
+
+        return [
+            'enabled simple toggle' => [
+                'featureName' => 'someOtherFeatureName',
+                'config'      => [
+                    $featureName => [
+                        'toggle' => SimpleToggle::class,
+                        'config' => [
+                            'enabled' => true
+                        ]
+                    ],
+                ],
+            ]
         ];
     }
 }
