@@ -1,20 +1,19 @@
 <?php
 
 use VaneaVasco\Toggle\Toggle\PercentToggle;
+use VaneaVasco\Toggle\Toggle\SimpleToggle;
 
 return [
-    'myFeature' => [
-        'toggle' => \VaneaVasco\Toggle\Toggle\SimpleToggle::class,
+    'myFeature'      => [
+        'toggle' => SimpleToggle::class,
         'config' => [
             'enabled' => true
         ]
     ],
     'myOtherFeature' => [
-        [
-            'toggle' => PercentToggle::class,
-            'config' => [
-                'probability' => 40
-            ]
+        'toggle' => PercentToggle::class,
+        'config' => [
+            'probability' => 40
         ]
-    ]
+    ],
 ];
