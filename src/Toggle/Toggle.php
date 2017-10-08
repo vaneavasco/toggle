@@ -2,7 +2,6 @@
 
 namespace VaneaVasco\Toggle\Toggle;
 
-
 use Adbar\Dot;
 
 interface Toggle

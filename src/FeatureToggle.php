@@ -29,15 +29,22 @@ class FeatureToggle
         return new static(new Dot($config), new ToggleFactory());
     }
 
-    public function isEnabled(string $featureName, array $context = [])
+    public function isEnabled(string $featureName, array $context = []): bool
     {
+        if (empty($featureName)) {
+            throw new \InvalidArgumentException('Feature name cannot be empty.');
+        }
         $featureConfig = $this->config->get($featureName);
-        $toggle        = $this->buildToggle($featureConfig['toggle']);
+
+        if (empty($featureConfig) || !array_key_exists('toggle', $featureConfig)) {
+            throw new \DomainException('Invalid feature config.');
+        }
+        $toggle = $this->buildToggle($featureConfig['toggle']);
 
         return $toggle->isEnabled($featureName, $this->config, $context);
     }
 
-    protected function buildToggle($toggleName)
+    protected function buildToggle(string $toggleName): Toggle
     {
         if (!in_array($toggleName, $this->toggles)) {
             $this->toggles[$toggleName] = $this->toggleFactory->build($toggleName);
