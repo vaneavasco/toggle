@@ -1,4 +1,5 @@
 # Simple feature toggles
+[![Build status][ico-travis]][link-travis]
 
 Example
 ```php
@@ -15,3 +16,5 @@ foreach ($featuresToCheck as $feature) {
     }
 }
 ```
+[ico-travis]: https://travis-ci.org/vaneavasco/toggle.svg?branch=master
+[link-travis]: https://travis-ci.org/vaneavasco/toggle
