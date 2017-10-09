@@ -2,7 +2,8 @@
 
 namespace VaneaVasco\Toggle\Toggle;
 
-use Adbar\Dot;
+use VaneaVasco\Toggle\Config\Config;
+
 
 /**
  * Class SimpleToggle
@@ -12,14 +13,14 @@ class SimpleToggle implements Toggle
 {
     /**
      * @param string $featureName
-     * @param Dot $config
+     * @param Config $config
      * @param array $context
      *
      * @return bool
      */
-    public function isEnabled(string $featureName, Dot $config, array $context = []): bool
+    public function isEnabled(string $featureName, Config $config, array $context = []): bool
     {
-        return $config->has($featureName) && $this->enabled($this->getConfig($featureName, $config));
+        return $config->offsetExists($featureName) && $this->enabled($this->getConfig($featureName, $config));
     }
 
     protected function enabled($enabled)

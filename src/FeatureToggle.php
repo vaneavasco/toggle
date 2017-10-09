@@ -2,12 +2,13 @@
 
 namespace VaneaVasco\Toggle;
 
-use Adbar\Dot;
+use VaneaVasco\Toggle\Config\Config;
+use VaneaVasco\Toggle\Config\DotConfig;
 use VaneaVasco\Toggle\Toggle\Toggle;
 
 class FeatureToggle
 {
-    /** @var Dot */
+    /** @var Config */
     protected $config;
 
     /** @var  Toggle[] */
@@ -17,7 +18,7 @@ class FeatureToggle
      */
     private $toggleFactory;
 
-    public function __construct(Dot $config, ToggleFactory $toggleFactory)
+    public function __construct(Config $config, ToggleFactory $toggleFactory)
     {
         $this->config        = $config;
         $this->toggleFactory = $toggleFactory;
@@ -26,7 +27,7 @@ class FeatureToggle
 
     public static function build(array $config): FeatureToggle
     {
-        return new static(new Dot($config), new ToggleFactory());
+        return new static(new DotConfig($config), new ToggleFactory());
     }
 
     public function isEnabled(string $featureName, array $context = []): bool
@@ -34,12 +35,13 @@ class FeatureToggle
         if (empty($featureName)) {
             throw new \InvalidArgumentException('Feature name cannot be empty.');
         }
-        $featureConfig = $this->config->get($featureName);
 
-        if (empty($featureConfig) || !array_key_exists('toggle', $featureConfig)) {
+
+        $featureConfigKey = implode('.', [$featureName, 'toggle']);
+        if (!$this->config->offsetExists($featureName) || $this->config->isEmpty($featureConfigKey)) {
             throw new \DomainException('Invalid feature config.');
         }
-        $toggle = $this->buildToggle($featureConfig['toggle']);
+        $toggle = $this->buildToggle($this->config->get($featureConfigKey));
 
         return $toggle->isEnabled($featureName, $this->config, $context);
     }

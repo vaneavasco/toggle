@@ -2,9 +2,9 @@
 
 namespace VaneaVasco\Toggle\Toggle;
 
-use Adbar\Dot;
+use VaneaVasco\Toggle\Config\Config;
 
 interface Toggle
 {
-    public function isEnabled(string $featureName, Dot $config, array $context);
+    public function isEnabled(string $featureName, Config $config, array $context);
 }

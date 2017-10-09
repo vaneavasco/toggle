@@ -4,6 +4,7 @@ namespace Unit\Toggle\SimpleToggle;
 
 use Adbar\Dot;
 use PHPUnit\Framework\TestCase;
+use VaneaVasco\Toggle\Config\DotConfig;
 use VaneaVasco\Toggle\Toggle\SimpleToggle;
 
 
@@ -18,11 +19,9 @@ class IsEnabledTest extends TestCase
      */
     public function testWhenIsEnabled(string $featureName, array $config)
     {
-        $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
-                             ->setMethods(null)
-                             ->getMock();
+        $simpleToggle = new SimpleToggle();
 
-        $this->assertTrue($simpleToggle->isEnabled($featureName, new Dot($config)));
+        $this->assertTrue($simpleToggle->isEnabled($featureName, new DotConfig($config)));
     }
 
     /**
@@ -30,12 +29,9 @@ class IsEnabledTest extends TestCase
      */
     public function testWhenANonExistingKeyIsProvided(string $featureName, array $config)
     {
-        $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
-                             ->setMethods(null)
-                             ->getMock();
+        $simpleToggle = new SimpleToggle();
 
-
-        $this->assertNotTrue($simpleToggle->isEnabled($featureName, new Dot($config)));
+        $this->assertNotTrue($simpleToggle->isEnabled($featureName, new DotConfig($config)));
     }
 
     /**
@@ -43,11 +39,9 @@ class IsEnabledTest extends TestCase
      */
     public function testWenIsNotEnabled(string $featureName, array $config)
     {
-        $simpleToggle = $this->getMockBuilder(SimpleToggle::class)
-                             ->setMethods(null)
-                             ->getMock();
+        $simpleToggle = new SimpleToggle();
 
-        $this->assertNotTrue($simpleToggle->isEnabled($featureName, new Dot($config)));
+        $this->assertNotTrue($simpleToggle->isEnabled($featureName, new DotConfig($config)));
     }
 
     /**

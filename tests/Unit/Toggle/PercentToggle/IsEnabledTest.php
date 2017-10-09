@@ -4,6 +4,7 @@ namespace Unit\Toggle\PercentToggle;
 
 use Adbar\Dot;
 use PHPUnit\Framework\TestCase;
+use VaneaVasco\Toggle\Config\DotConfig;
 use VaneaVasco\Toggle\Toggle\PercentToggle;
 
 
@@ -26,7 +27,7 @@ class IsEnabledTest extends TestCase
                       ->willReturn(rand(1, $rand));
 
 
-        $this->assertTrue($percentToggle->isEnabled($featureName, new Dot($config)));
+        $this->assertTrue($percentToggle->isEnabled($featureName, new DotConfig($config)));
     }
 
     /**
@@ -42,7 +43,7 @@ class IsEnabledTest extends TestCase
                       ->willReturn(rand($rand, 100));
 
 
-        $this->assertNotTrue($percentToggle->isEnabled($featureName, new Dot($config)));
+        $this->assertNotTrue($percentToggle->isEnabled($featureName, new DotConfig($config)));
     }
 
     /**
@@ -58,7 +59,7 @@ class IsEnabledTest extends TestCase
                       ->willReturn(rand($rand, 100));
 
 
-        $this->assertNotTrue($percentToggle->isEnabled($featureName, new Dot($config)));
+        $this->assertNotTrue($percentToggle->isEnabled($featureName, new DotConfig($config)));
     }
 
     /**

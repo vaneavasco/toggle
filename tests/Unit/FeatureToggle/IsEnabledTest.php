@@ -2,9 +2,10 @@
 
 namespace Unit\FeatureToggle;
 
-use Adbar\Dot;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use VaneaVasco\Toggle\Config\Config;
+use VaneaVasco\Toggle\Config\DotConfig;
 use VaneaVasco\Toggle\FeatureToggle;
 use VaneaVasco\Toggle\Toggle\Toggle;
 use VaneaVasco\Toggle\ToggleFactory;
@@ -23,10 +24,7 @@ class IsEnabledTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         /** @var FeatureToggle $featureToggle */
-        $featureToggle = $this->getMockBuilder(FeatureToggle::class)
-                              ->setConstructorArgs([$this->config, $this->toggleFactory])
-                              ->setMethodsExcept(['isEnabled'])
-                              ->getMock();
+        $featureToggle = new FeatureToggle($this->config, $this->toggleFactory);
 
         $featureToggle->isEnabled('');
     }
@@ -36,19 +34,20 @@ class IsEnabledTest extends TestCase
      *
      * @dataProvider invalidFeatureConfigDataProvider
      */
-    public function testInvalidFeatureConfig($featureConfig, $featureName)
+    public function testInvalidFeatureConfig($featureConfig, $featureName, $isEmpty, $offsetExists)
     {
         $this->expectException(\DomainException::class);
 
-        $this->config->expects($this->once())
-                     ->method('get')
-                     ->willReturn($featureConfig);
+        $this->config->expects($this->atMost(1))
+                     ->method('offsetExists')
+                     ->willReturn($offsetExists);
+
+        $this->config->expects($this->atMost(1))
+                     ->method('isEmpty')
+                     ->willReturn($isEmpty);
 
         /** @var FeatureToggle $featureToggle */
-        $featureToggle = $this->getMockBuilder(FeatureToggle::class)
-                              ->setConstructorArgs([$this->config, $this->toggleFactory])
-                              ->setMethodsExcept(['isEnabled'])
-                              ->getMock();
+        $featureToggle = new FeatureToggle($this->config, $this->toggleFactory);
 
         $featureToggle->isEnabled($featureName);
     }
@@ -58,11 +57,17 @@ class IsEnabledTest extends TestCase
      */
     public function testValidFeature()
     {
+        $this->config->expects($this->atMost(1))
+                     ->method('offsetExists')
+                     ->willReturn(true);
+
+        $this->config->expects($this->atMost(1))
+                     ->method('isEmpty')
+                     ->willReturn(false);
+
         $this->config->expects($this->once())
                      ->method('get')
-                     ->willReturn([
-                         'toggle' => Toggle::class
-                     ]);
+                     ->willReturn(Toggle::class);
 
         $mockToggle = $this->getMockBuilder(Toggle::class)
                            ->setMethods(['isEnabled'])
@@ -78,10 +83,7 @@ class IsEnabledTest extends TestCase
                             ->willReturn($mockToggle);
 
         /** @var FeatureToggle $featureToggle */
-        $featureToggle = $this->getMockBuilder(FeatureToggle::class)
-                              ->setConstructorArgs([$this->config, $this->toggleFactory])
-                              ->setMethodsExcept(['isEnabled', 'buildToggle'])
-                              ->getMock();
+        $featureToggle = new FeatureToggle($this->config, $this->toggleFactory);
 
 
         $isEnabled = $featureToggle->isEnabled('featureName');
@@ -91,15 +93,26 @@ class IsEnabledTest extends TestCase
     public function invalidFeatureConfigDataProvider()
     {
         return [
-            'empty config'                        => ['featureConfig' => [], 'featureName' => 'someFeature'],
-            'non empty config with no toggle key' => [['non empty' => 'array'], 'featureName' => 'someFeature']
+            'empty config'                        => [
+                'featureConfig' => [],
+                'featureName'   => 'someFeature',
+                'isEmpty'       => true,
+                'offsetExists'  => false
+            ],
+            'non empty config with no toggle key' => [
+                ['non empty' => 'array'],
+                'featureName'  => 'someFeature',
+                'isEmpty'      => false,
+                'offsetExists' => false
+            ]
         ];
     }
 
     protected function setUp()
     {
-        $this->config = $this->getMockBuilder(Dot::class)
+        $this->config = $this->getMockBuilder(Config::class)
                              ->disableOriginalConstructor()
+                             ->setMethods(get_class_methods(Config::class))
                              ->getMock();
 
         $this->toggleFactory = $this->getMockBuilder(ToggleFactory::class)

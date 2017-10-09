@@ -2,14 +2,14 @@
 
 namespace VaneaVasco\Toggle\Toggle;
 
-use Adbar\Dot;
+use VaneaVasco\Toggle\Config\Config;
 
 class PercentToggle implements Toggle
 {
 
-    public function isEnabled(string $featureName, Dot $config, array $context = [])
+    public function isEnabled(string $featureName, Config $config, array $context = [])
     {
-        return $config->has($featureName) && $this->enabled($this->getConfig($featureName, $config));
+        return $config->offsetExists($featureName) && $this->enabled($this->getConfig($featureName, $config));
     }
 
     protected function enabled($probability): bool
