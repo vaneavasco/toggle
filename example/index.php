@@ -14,4 +14,3 @@ foreach ($featuresToCheck as $feature) {
         echo "$feature is disabled \n";
     }
 }
-
