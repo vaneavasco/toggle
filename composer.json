@@ -1,20 +1,30 @@
 {
-    "name": "vaneavasco/toggle",
-    "description": "Simple feature toggles package",
-    "authors": [
-        {
-            "name": "vanea"
-        }
-    ],
-    "require": {
-        "adbario/php-dot-notation": "^2.0"
-    },
-    "autoload" : {
-        "psr-4": {
-            "VaneaVasco\\Toggle\\": "src"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.3"
+  "name": "vaneavasco/toggle",
+  "description": "Simple feature toggles package",
+  "keywords": [
+    "feature",
+    "toggle",
+    "switch",
+    "flag",
+    "conditional",
+    "flipper"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "vanea"
     }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "adbario/php-dot-notation": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "VaneaVasco\\Toggle\\": "src"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.3"
+  }
 }
